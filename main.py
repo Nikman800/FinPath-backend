@@ -16,23 +16,17 @@ import anthropic
 app = FastAPI(title="FinPath AI Backend", version="1.0.0")
 
 # CORS — allow Next.js frontend (including Vercel preview deploys)
-ALLOWED_ORIGINS = os.getenv(
-    "ALLOWED_ORIGINS",
-    "http://localhost:3000,https://fin-path-beta.vercel.app",
-).split(",")
-
-def is_allowed_origin(origin: str) -> bool:
-    if origin in ALLOWED_ORIGINS:
-        return True
-    # Allow all Vercel preview deployment URLs for this project
-    if origin.endswith(".vercel.app") and "nikman800" in origin:
-        return True
-    return False
+ALLOWED_ORIGINS = [
+    o.strip() for o in os.getenv(
+        "ALLOWED_ORIGINS",
+        "http://localhost:3000,https://fin-path-beta.vercel.app",
+    ).split(",")
+]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=ALLOWED_ORIGINS,
-    allow_origin_regex=r"https://fin-path.*-nikman800s-projects\.vercel\.app",
+    allow_origin_regex=r"https://.*\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
